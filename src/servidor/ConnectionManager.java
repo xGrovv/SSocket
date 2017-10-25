@@ -12,8 +12,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import eventos.ClientEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +28,7 @@ public class ConnectionManager extends Thread{
     public ConnectionManager(ServerSocket ss) {
         enable=false;
         this.sserver=ss;
+        listeners= new ArrayList();
     }
     
     public void addListenerEvent(ClientEventListener clientEventListener){
@@ -52,8 +51,7 @@ public class ConnectionManager extends Thread{
                 System.out.println("esperando conexiones.....");
                 sclient = sserver.accept();  // escuchando conexiones
                 
-                // lanzar evento onConnet dando como paramtro al cliente conectado
-                // para que el serversocket lo incluya en la lista de clientes
+                // lanza evento onConnet 
                 ListIterator li = listeners.listIterator();
                 while (li.hasNext()) {
                     ClientEventListener listener = (ClientEventListener) li.next();

@@ -34,16 +34,33 @@ public class ClientManager extends Thread{
         }
     }
     
+    public void iniciar(){
+        this.start();
+    }
+    
+    public void pausar(){
+        
+    }
+    
+    public void deterner(){
+        
+    }
+    
     @Override
     public void run() {
-            try {
-                while (connected) {
-                    message = messageIn.readUTF();  // a la espera de mensajes
-                    System.out.println("Nuevo Mensaje del cliente: " + message);
-                }
-            } catch (IOException e) {
-                System.out.println("error ClientManager.run: "+ e.getMessage());
+        try {
+            //while (connected) {
+            while (socket.isConnected()){
+                
+                message = messageIn.readUTF();  // a la espera de mensajes
+                System.out.println("Nuevo Mensaje del cliente: " + message);
             }
+            // si ya no esta conectado -> lanzar evento de desconeccion
+            //aqui
+            System.out.println("");
+        } catch (IOException e) {
+            System.out.println("SE DESCONECTO EL CLIENTE: "+ e.getMessage());
+        }
     }
 
     public void desconectar(){
