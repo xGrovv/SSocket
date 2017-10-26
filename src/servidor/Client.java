@@ -5,6 +5,8 @@
  */
 package servidor;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Date;
 
@@ -17,11 +19,12 @@ public class Client {
     private Socket socket=null;
     String ip;
     Date dateConnection;
-    
+    InetAddress inetAddress;
     
     public Client(Socket socket){
         this.socket= socket;
-        ip = socket.getInetAddress().toString();
+        inetAddress = socket.getInetAddress();
+        ip = inetAddress.toString();
         dateConnection = new Date (System.currentTimeMillis());
     }
 
@@ -33,5 +36,7 @@ public class Client {
         return ip;
     }
             
-    
+    public InetAddress getInetAddress(){
+        return inetAddress;
+    }
 }

@@ -6,6 +6,7 @@
 package servidor;
 
 import eventos.ClientListObserverListener;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
@@ -30,6 +31,8 @@ public class ClientListObserver extends Thread {
     public void run() {
         /*for(Object obj : listeners){
             ClientManager cli = (ClientManager)obj;
+            InetAddress ia = cli.getClient().getInetAddress();
+            
             
         
         }*/

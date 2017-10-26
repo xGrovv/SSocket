@@ -97,9 +97,9 @@ public class ClientManager extends Thread{
             System.out.println("ERRR "+ e.getMessage());
         }
     }
-
-    public void desconectar(){
-        connected = false;
+    
+    public Client getClient(){
+        return cliente;
     }
     
     public void enviar(String mensaje) {
