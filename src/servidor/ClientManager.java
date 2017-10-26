@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  *
@@ -16,18 +17,20 @@ import java.net.Socket;
  */
 public class ClientManager extends Thread{
     
-    private Socket socket;
+    //private Socket socket;
+    private Client cliente;
     private DataOutputStream messageOut;
     private DataInputStream messageIn;
     private String message;
     private boolean connected;
     
-    public ClientManager(Socket sclient){
-        this.socket = sclient;
+    public ClientManager(Client cliente){
+        
+        this.cliente= cliente;
         connected = true;
         try {
-            messageOut = new DataOutputStream(this.socket.getOutputStream());
-            messageIn = new DataInputStream(this.socket.getInputStream());
+            messageOut = new DataOutputStream(this.cliente.getSocket().getOutputStream());
+            messageIn = new DataInputStream(this.cliente.getSocket().getInputStream());
             message = "";
         } catch (IOException e) {
             System.out.println("error ClientManager Constructor: "+ e.getMessage());
@@ -50,16 +53,19 @@ public class ClientManager extends Thread{
     public void run() {
         try {
             //while (connected) {
-            while (socket.isConnected()){
+            while (connected){
                 
                 message = messageIn.readUTF();  // a la espera de mensajes
                 System.out.println("Nuevo Mensaje del cliente: " + message);
             }
-            // si ya no esta conectado -> lanzar evento de desconeccion
-            //aqui
+            
             System.out.println("");
+        } catch (SocketException ex) {
+            System.out.println("SE DESCONECTO EL CLIENTE: "+ ex.getMessage());
+            //  lanzar evento de desconeccion
+            //aqui
         } catch (IOException e) {
-            System.out.println("SE DESCONECTO EL CLIENTE: "+ e.getMessage());
+            System.out.println("ERRR "+ e.getMessage());
         }
     }
 

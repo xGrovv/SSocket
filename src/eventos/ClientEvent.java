@@ -14,7 +14,7 @@ import servidor.ConnectionManager;
  */
 public class ClientEvent extends EventObject{
     
-    ConnectionManager conMan;
+    private ConnectionManager conMan;
 
     public ClientEvent(Object source, ConnectionManager connectionManager) {
         super(source);

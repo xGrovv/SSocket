@@ -21,6 +21,7 @@ public class ConnectionManager extends Thread{
     
     private ServerSocket sserver;
     private Socket sclient;
+    private Client cliente=null;
     private ArrayList listeners;
     private boolean enable;
     //funciones de iniciar, pausar, terminar
@@ -45,12 +46,17 @@ public class ConnectionManager extends Thread{
         
     }
     
+    public Client getCliente(){
+        return this.cliente;
+    }
+    
     public void run() {
         while (enable) {
             try {
                 System.out.println("esperando conexiones.....");
                 sclient = sserver.accept();  // escuchando conexiones
                 
+                cliente= new Client(sclient);
                 // lanza evento onConnet 
                 ListIterator li = listeners.listIterator();
                 while (li.hasNext()) {
@@ -59,7 +65,7 @@ public class ConnectionManager extends Thread{
                     (listener).onConnetClient(evObj);
                 }
                 
-                ClientManager clientComunication = new ClientManager(sclient); // establecemos un hilo de conexion con el cliente
+                ClientManager clientComunication = new ClientManager(cliente); // establecemos un hilo de conexion con el cliente
                 clientComunication.start();   // inicializamos el hilo
                 System.out.println("se conecto un cliente.....");
                 //lista_clientes.add(hilo_cliente);   // agregamos al cliente a la lista

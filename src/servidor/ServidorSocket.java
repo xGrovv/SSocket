@@ -5,7 +5,9 @@
  */
 package servidor;
 
+import eventos.ClientEvent;
 import eventos.ClientEventImplement;
+import eventos.ClientEventListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,12 +23,31 @@ public class ServidorSocket {
     
     private ServerSocket server=null;
     private ConnectionManager connectionManager=null;
-    private ArrayList<Socket> listClientes;
+    //private ArrayList<Socket> listClientes;
+    
+    private ArrayList<ClientManager> list;
     private int port;
     
+    ClientEventListener eventListener= new ClientEventListener() {
+
+        @Override
+        public void onConnetClient(ClientEvent ev) {
+            ConnectionManager con = (ConnectionManager)ev.getSource();
+            Client cliente = con.getCliente();
+            ClientManager clientManager= new ClientManager(cliente);
+            list.add(clientManager);
+        }
+
+        @Override
+        public void onDisconnectClient(ClientEvent ev) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    };
+            
     public ServidorSocket(int port){
         this.port=port;
-        listClientes = new ArrayList<>();
+        //listClientes = new ArrayList<>();
+        list = new ArrayList<>();
         try{
             server= new ServerSocket(port);
         } catch (Exception e) {
