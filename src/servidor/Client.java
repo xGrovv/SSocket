@@ -6,19 +6,23 @@
 package servidor;
 
 import java.net.Socket;
+import java.util.Date;
 
 /**
  *
  * @author rudy
  */
 public class Client {
+    
     private Socket socket=null;
     String ip;
+    Date dateConnection;
     
     
     public Client(Socket socket){
         this.socket= socket;
         ip = socket.getInetAddress().toString();
+        dateConnection = new Date (System.currentTimeMillis());
     }
 
     public Socket getSocket() {

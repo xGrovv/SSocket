@@ -5,65 +5,73 @@
  */
 package servidor;
 
-import eventos.ClientEvent;
-import eventos.ClientEventImplement;
-import eventos.ClientEventListener;
+import eventos.ClientListObserverEvent;
+import eventos.ClientListObserverListener;
+import eventos.ClientManagerEvent;
+import eventos.ConnectionManagerEvent;
+import eventos.ClientManagerListener;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import eventos.ConnectionManagertListener;
 
 /**
  *
  * @author Grover
  */
-public class ServidorSocket {
+public class ServidorSocket implements ConnectionManagertListener, ClientManagerListener, ClientListObserverListener{
     
     private ServerSocket server=null;
     private ConnectionManager connectionManager=null;
-    //private ArrayList<Socket> listClientes;
+    private ClientListObserver clientListObserver;
     
-    private ArrayList<ClientManager> list;
+    private ArrayList<ClientManager> clientManagerList;
     private int port;
     
-    ClientEventListener eventListener= new ClientEventListener() {
-
-        @Override
-        public void onConnetClient(ClientEvent ev) {
-            ConnectionManager con = (ConnectionManager)ev.getSource();
-            Client cliente = con.getCliente();
-            ClientManager clientManager= new ClientManager(cliente);
-            list.add(clientManager);
-        }
-
-        @Override
-        public void onDisconnectClient(ClientEvent ev) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-    };
-            
     public ServidorSocket(int port){
         this.port=port;
-        //listClientes = new ArrayList<>();
-        list = new ArrayList<>();
+        clientManagerList = new ArrayList<>();
         try{
-            server= new ServerSocket(port);
-        } catch (Exception e) {
+            server= new ServerSocket(this.port);
+        } catch (IOException e) {
             System.out.println("No se pudo abrir el servidor socket: "+e.getMessage());
         }
     }
     
+        @Override
+        public void onConnetClient(ConnectionManagerEvent ev) {
+            ConnectionManager con = (ConnectionManager)ev.getSource();
+            Client cliente = con.getCliente();
+            ClientManager clientManager= new ClientManager(cliente);
+            clientManager.addListenerEvent(this);
+            clientManagerList.add(clientManager);
+            clientManager.iniciar();
+        }
+
+        @Override
+        public void onDisconnectClient(ClientManagerEvent ev) {
+            ClientManager cli = (ClientManager)ev.getSource();
+            cli.deterner();
+            clientManagerList.remove(cli);
+            // aqui quitar de la lista el objeto cli
+            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        @Override
+        public void onLostConnection(ClientListObserverEvent ev) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+    
     public void iniciarServicio(){
-        //try {
-            connectionManager= new ConnectionManager(server);
-            connectionManager.addListenerEvent(new ClientEventImplement());
-            connectionManager.Iniciar();
-        //} catch (Exception e) {
-        //}
+        connectionManager= new ConnectionManager(server);
+        connectionManager.addListenerEvent(this);
+        connectionManager.Iniciar();
         
-        
+        clientListObserver = new ClientListObserver(clientManagerList);
+        clientListObserver.addListenerEvent(this);
+        clientListObserver.start();
     }
     
     public void detenerServicio() {
@@ -74,6 +82,8 @@ public class ServidorSocket {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    
     
     
 }

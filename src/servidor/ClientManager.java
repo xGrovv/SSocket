@@ -5,11 +5,18 @@
  */
 package servidor;
 
+import eventos.ClientManagerEvent;
+import eventos.ClientManagerListener;
+import eventos.ConnectionManagertListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,10 +31,13 @@ public class ClientManager extends Thread{
     private String message;
     private boolean connected;
     
+    private ArrayList listeners;
+    
     public ClientManager(Client cliente){
         
         this.cliente= cliente;
         connected = true;
+        listeners= new ArrayList();
         try {
             messageOut = new DataOutputStream(this.cliente.getSocket().getOutputStream());
             messageIn = new DataInputStream(this.cliente.getSocket().getInputStream());
@@ -35,6 +45,14 @@ public class ClientManager extends Thread{
         } catch (IOException e) {
             System.out.println("error ClientManager Constructor: "+ e.getMessage());
         }
+    }
+    
+    public void addListenerEvent(ClientManagerListener clientManagerListener){
+        listeners.add(clientManagerListener);
+    }
+    
+    public Socket getSocket(){
+        return cliente.getSocket();
     }
     
     public void iniciar(){
@@ -46,6 +64,12 @@ public class ClientManager extends Thread{
     }
     
     public void deterner(){
+        connected=false;
+        try {
+            cliente.getSocket().close();
+        } catch (IOException ex) {
+            Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
     
@@ -62,8 +86,13 @@ public class ClientManager extends Thread{
             System.out.println("");
         } catch (SocketException ex) {
             System.out.println("SE DESCONECTO EL CLIENTE: "+ ex.getMessage());
-            //  lanzar evento de desconeccion
-            //aqui
+            ListIterator li = listeners.listIterator();
+            while (li.hasNext()) {
+                 
+                ClientManagerListener listener = (ClientManagerListener) li.next();
+                ClientManagerEvent evObj = new ClientManagerEvent(this, this);
+                (listener).onDisconnectClient(evObj);
+            }
         } catch (IOException e) {
             System.out.println("ERRR "+ e.getMessage());
         }

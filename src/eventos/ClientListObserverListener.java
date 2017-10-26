@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servidor;
+package eventos;
 
-import java.util.ArrayList;
+import java.util.EventListener;
 
 /**
  *
- * @author rudy
+ * @author Grover
  */
-public class ListObserver {
+public interface ClientListObserverListener extends EventListener{
     
+    public void onLostConnection(ClientListObserverEvent ev);
     
 }

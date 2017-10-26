@@ -11,8 +11,8 @@ import java.util.EventListener;
  *
  * @author Grover
  */
-public interface ClientEventListener extends EventListener{
+public interface ConnectionManagertListener extends EventListener{
     
-    public void onConnetClient(ClientEvent ev);
-    public void onDisconnectClient(ClientEvent ev);  
+    public void onConnetClient(ConnectionManagerEvent ev);
+    //public void onDisconnectClient(ConnectionManagerEvent ev);  
 }
