@@ -13,13 +13,6 @@ import java.util.EventObject;
  */
 public class ConnectionManagerEvent extends EventObject{
     
-//    private ConnectionManager conMan;
-//
-//    public ConnectionManagerEvent(Object source, ConnectionManager connectionManager) {
-//        super(source);
-//        conMan = connectionManager;
-//    }
-    
     public ConnectionManagerEvent(Object source) {
         super(source);
     }

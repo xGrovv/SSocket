@@ -75,7 +75,6 @@ public class ClientManager extends Thread{
     @Override
     public void run() {
         try {
-            //while (connected) {
             while (connected){
                 
                 message = messageIn.readUTF();  // a la espera de mensajes
@@ -85,7 +84,7 @@ public class ClientManager extends Thread{
                 while (li.hasNext()) {
 
                     ClientManagerListener listener = (ClientManagerListener) li.next();
-                    ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
+                    ClientManagerEvent evObj = new ClientManagerEvent(this);
                     (listener).onReceiveMessage(evObj);
                 }
             }

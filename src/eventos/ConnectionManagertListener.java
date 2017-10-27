@@ -14,5 +14,5 @@ import java.util.EventListener;
 public interface ConnectionManagertListener extends EventListener{
     
     public void onConnetClient(ConnectionManagerEvent ev);
-    //public void onDisconnectClient(ConnectionManagerEvent ev);  
+    
 }

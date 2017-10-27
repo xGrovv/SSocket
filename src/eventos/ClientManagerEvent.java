@@ -13,12 +13,8 @@ import java.util.EventObject;
  */
 public class ClientManagerEvent extends EventObject {
     
-    //private ClientManager cli;
-    
-    public ClientManagerEvent(Object source){//, ClientManager clientManager) {
+    public ClientManagerEvent(Object source){
         super(source);
-        //cli = clientManager;
     }
-    
     
 }

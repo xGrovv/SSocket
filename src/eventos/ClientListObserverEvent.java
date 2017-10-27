@@ -13,11 +13,8 @@ import java.util.EventObject;
  */
 public class ClientListObserverEvent extends EventObject{
     
-    //private ClientListObserver obs;
-    
-    public ClientListObserverEvent(Object source){//, ClientListObserver clientListObserver) {
+    public ClientListObserverEvent(Object source){
         super(source);
-        //obs = clientListObserver;
     }
     
 }

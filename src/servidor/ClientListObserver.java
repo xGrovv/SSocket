@@ -39,6 +39,4 @@ public class ClientListObserver extends Thread {
     }
     
     
-    
-    
 }

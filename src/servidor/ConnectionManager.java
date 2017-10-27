@@ -62,20 +62,14 @@ public class ConnectionManager extends Thread{
                 ListIterator li = listeners.listIterator();
                 while (li.hasNext()) {
                     ConnectionManagertListener listener = (ConnectionManagertListener) li.next();
-                    //ConnectionManagerEvent evObj = new ConnectionManagerEvent(this, this);
                     ConnectionManagerEvent evObj = new ConnectionManagerEvent(this);
                     (listener).onConnetClient(evObj);
                 }
-                
-                //ClientManager clientComunication = new ClientManager(cliente); // establecemos un hilo de conexion con el cliente
-                //clientComunication.start();   // inicializamos el hilo
-                //System.out.println("se conecto un cliente.....");
-                
-                //lista_clientes.add(hilo_cliente);   // agregamos al cliente a la lista
             } catch (IOException ex) {
                 System.out.println("error run HiloServidor S...");
             }
             
         }
     }
+    
 }

@@ -93,7 +93,4 @@ public class ServidorSocket implements ConnectionManagertListener, ClientManager
         }
     }
 
-    
-    
-    
 }
