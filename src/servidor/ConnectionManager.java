@@ -62,7 +62,8 @@ public class ConnectionManager extends Thread{
                 ListIterator li = listeners.listIterator();
                 while (li.hasNext()) {
                     ConnectionManagertListener listener = (ConnectionManagertListener) li.next();
-                    ConnectionManagerEvent evObj = new ConnectionManagerEvent(this, this);
+                    //ConnectionManagerEvent evObj = new ConnectionManagerEvent(this, this);
+                    ConnectionManagerEvent evObj = new ConnectionManagerEvent(this);
                     (listener).onConnetClient(evObj);
                 }
                 

@@ -47,7 +47,9 @@ public class ServidorSocket implements ConnectionManagertListener, ClientManager
             ClientManager clientManager= new ClientManager(cliente);
             clientManager.addListenerEvent(this);
             clientManagerList.add(clientManager);
+            System.out.println("ServidorSocket:> Nuevo Cliente Registrado:: ");
             clientManager.iniciar();
+            
         }
 
         @Override
@@ -55,8 +57,14 @@ public class ServidorSocket implements ConnectionManagertListener, ClientManager
             ClientManager cli = (ClientManager)ev.getSource();
             cli.deterner();
             clientManagerList.remove(cli);
-            // aqui quitar de la lista el objeto cli
-            //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            System.out.println("ServidorSocket:> Una Cliente fue Borrado:: ");
+        }
+        
+        @Override
+        public void onReceiveMessage(ClientManagerEvent ev){
+            ClientManager cli = (ClientManager)ev.getSource();
+            System.out.println("Mensage del Cliente:: "+cli.getMessage());
+            
         }
         
         @Override
@@ -65,6 +73,8 @@ public class ServidorSocket implements ConnectionManagertListener, ClientManager
         }
     
     public void iniciarServicio(){
+        if (server==null)
+            return;
         connectionManager= new ConnectionManager(server);
         connectionManager.addListenerEvent(this);
         connectionManager.Iniciar();

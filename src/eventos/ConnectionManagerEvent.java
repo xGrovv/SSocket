@@ -6,7 +6,6 @@
 package eventos;
 
 import java.util.EventObject;
-import servidor.ConnectionManager;
 
 /**
  *
@@ -14,11 +13,15 @@ import servidor.ConnectionManager;
  */
 public class ConnectionManagerEvent extends EventObject{
     
-    private ConnectionManager conMan;
-
-    public ConnectionManagerEvent(Object source, ConnectionManager connectionManager) {
+//    private ConnectionManager conMan;
+//
+//    public ConnectionManagerEvent(Object source, ConnectionManager connectionManager) {
+//        super(source);
+//        conMan = connectionManager;
+//    }
+    
+    public ConnectionManagerEvent(Object source) {
         super(source);
-        conMan = connectionManager;
     }
     
 }

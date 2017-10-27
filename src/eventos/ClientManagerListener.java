@@ -14,5 +14,6 @@ import java.util.EventListener;
 public interface ClientManagerListener extends EventListener{
     
     public void onDisconnectClient(ClientManagerEvent ev);
+    public void onReceiveMessage(ClientManagerEvent ev);
     
 }

@@ -7,7 +7,6 @@ package servidor;
 
 import eventos.ClientManagerEvent;
 import eventos.ClientManagerListener;
-import eventos.ConnectionManagertListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -80,7 +79,15 @@ public class ClientManager extends Thread{
             while (connected){
                 
                 message = messageIn.readUTF();  // a la espera de mensajes
-                System.out.println("Nuevo Mensaje del cliente: " + message);
+                
+                //System.out.println("Nuevo Mensaje del cliente: " + message);
+                ListIterator li = listeners.listIterator();
+                while (li.hasNext()) {
+
+                    ClientManagerListener listener = (ClientManagerListener) li.next();
+                    ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
+                    (listener).onReceiveMessage(evObj);
+                }
             }
             
             System.out.println("");
@@ -90,12 +97,16 @@ public class ClientManager extends Thread{
             while (li.hasNext()) {
                  
                 ClientManagerListener listener = (ClientManagerListener) li.next();
-                ClientManagerEvent evObj = new ClientManagerEvent(this, this);
+                ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
         } catch (IOException e) {
             System.out.println("ERRR "+ e.getMessage());
         }
+    }
+    
+    public String getMessage(){
+        return message;
     }
     
     public Client getClient(){

@@ -6,7 +6,6 @@
 package eventos;
 
 import java.util.EventObject;
-import servidor.ClientListObserver;
 
 /**
  *
@@ -14,11 +13,11 @@ import servidor.ClientListObserver;
  */
 public class ClientListObserverEvent extends EventObject{
     
-    private ClientListObserver obs;
+    //private ClientListObserver obs;
     
-    public ClientListObserverEvent(Object source, ClientListObserver clientListObserver) {
+    public ClientListObserverEvent(Object source){//, ClientListObserver clientListObserver) {
         super(source);
-        obs = clientListObserver;
+        //obs = clientListObserver;
     }
     
 }
