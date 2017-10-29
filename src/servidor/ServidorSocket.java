@@ -21,7 +21,7 @@ import eventos.ConnectionManagertListener;
  *
  * @author Grover
  */
-public class ServidorSocket implements ConnectionManagertListener, ClientManagerListener, ClientListObserverListener{
+public class ServidorSocket implements  ClientManagerListener, ClientListObserverListener{
     
     private ServerSocket server=null;
     private ConnectionManager connectionManager=null;
@@ -40,8 +40,7 @@ public class ServidorSocket implements ConnectionManagertListener, ClientManager
         }
     }
     
-        @Override
-        public void onConnetClient(ConnectionManagerEvent ev) {
+        public void connetClient_Action(ConnectionManagerEvent ev) {
             ConnectionManager con = (ConnectionManager)ev.getSource();
             Client cliente = con.getCliente();
             ClientManager clientManager= new ClientManager(cliente);
@@ -76,7 +75,14 @@ public class ServidorSocket implements ConnectionManagertListener, ClientManager
         if (server==null)
             return;
         connectionManager= new ConnectionManager(server);
-        connectionManager.addListenerEvent(this);
+        //connectionManager.addListenerEvent(this);
+        connectionManager.addListenerEvent(new ConnectionManagertListener(){
+            @Override
+            public void onConnetClient(ConnectionManagerEvent ev) {
+                connetClient_Action(ev);
+            }
+            
+        });
         connectionManager.Iniciar();
         
         clientListObserver = new ClientListObserver(clientManagerList);
