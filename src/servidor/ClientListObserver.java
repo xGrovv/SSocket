@@ -21,7 +21,6 @@ public class ClientListObserver extends Thread {
     
     private ArrayList<ClientManager> listClients;
     private ArrayList listeners;
-    //private ClientManager clientDisconnected;
     private boolean enable;
 
     public ClientListObserver(ArrayList<ClientManager> listClients) {
@@ -30,10 +29,6 @@ public class ClientListObserver extends Thread {
         //clientDisconnected=null;
         enable =false;
     }
-
-//    public ClientManager obtenerClienteDesconectado(){
-//        return clientDisconnected;
-//    }
     
     public void addListenerEvent(ClientListObserverListener listObserverListener){
         listeners.add(listObserverListener);
@@ -54,12 +49,11 @@ public class ClientListObserver extends Thread {
             while (enable){
                 for (Object obj : listClients){
                     ClientManager cli = (ClientManager)obj;
-                    if(!cli.getClient().getInetAddress().isReachable(3000)){
-                        //clientDisconnected=cli;
+                    if(!cli.getClient().getSocket().getKeepAlive()){
+                    //if(!cli.getClient().getInetAddress().isReachable(3000)){
                         ListIterator li = listeners.listIterator();
                         while (li.hasNext()) {
                             ClientListObserverListener listener = (ClientListObserverListener) li.next();
-                            
                             ClientListObserverEvent evObj = new ClientListObserverEvent(cli);
                             (listener).onLostConnection(evObj);
                         }
