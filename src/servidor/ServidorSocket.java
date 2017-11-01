@@ -48,7 +48,6 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             clientManagerList.add(clientManager);
             System.out.println("ServidorSocket:> Nuevo Cliente Registrado:: ");
             clientManager.iniciar();
-            
         }
 
         @Override
@@ -68,26 +67,27 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         
         @Override
         public void onLostConnection(ClientListObserverEvent ev) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            ClientManager cli = (ClientManager)ev.getSource();
+            cli.deterner();
+            clientManagerList.remove(cli);
+            System.out.println("ServidorSocket:> [Conexion Perdida] Una Cliente fue Borrado:: ");
         }
     
     public void iniciarServicio(){
         if (server==null)
             return;
         connectionManager= new ConnectionManager(server);
-        //connectionManager.addListenerEvent(this);
         connectionManager.addListenerEvent(new ConnectionManagertListener(){
             @Override
             public void onConnetClient(ConnectionManagerEvent ev) {
                 connetClient_Action(ev);
             }
-            
         });
         connectionManager.Iniciar();
         
         clientListObserver = new ClientListObserver(clientManagerList);
         clientListObserver.addListenerEvent(this);
-        clientListObserver.start();
+        clientListObserver.iniciar();
     }
     
     public void detenerServicio() {

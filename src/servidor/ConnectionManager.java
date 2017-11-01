@@ -24,7 +24,6 @@ public class ConnectionManager extends Thread{
     private Client cliente=null;
     private ArrayList listeners;
     private boolean enable;
-    //funciones de iniciar, pausar, terminar
     
     public ConnectionManager(ServerSocket ss) {
         enable=false;
@@ -43,7 +42,6 @@ public class ConnectionManager extends Thread{
     
     public void Detener(){
         enable=false;
-        
     }
     
     public Client getCliente(){

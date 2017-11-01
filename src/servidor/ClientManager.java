@@ -69,7 +69,6 @@ public class ClientManager extends Thread{
         } catch (IOException ex) {
             Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
     
     @Override
@@ -94,7 +93,6 @@ public class ClientManager extends Thread{
             System.out.println("SE DESCONECTO EL CLIENTE: "+ ex.getMessage());
             ListIterator li = listeners.listIterator();
             while (li.hasNext()) {
-                 
                 ClientManagerListener listener = (ClientManagerListener) li.next();
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
