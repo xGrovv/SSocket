@@ -49,8 +49,8 @@ public class ClientListObserver extends Thread {
             while (enable){
                 for (Object obj : listClients){
                     ClientManager cli = (ClientManager)obj;
-                    if(!cli.getClient().getSocket().getKeepAlive()){
-                    //if(!cli.getClient().getInetAddress().isReachable(3000)){
+                    //if(!cli.getClient().getSocket().getKeepAlive()){
+                    if(!cli.getClient().getInetAddress().isReachable(3000)){
                         ListIterator li = listeners.listIterator();
                         while (li.hasNext()) {
                             ClientListObserverListener listener = (ClientListObserverListener) li.next();
