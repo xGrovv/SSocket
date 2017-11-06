@@ -7,7 +7,10 @@ package servidor;
 
 import eventos.ClientListObserverEvent;
 import eventos.ClientListObserverListener;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.logging.Level;
@@ -51,6 +54,7 @@ public class ClientListObserver extends Thread {
                     ClientManager cli = (ClientManager)obj;
                     //if(!cli.getClient().getSocket().getKeepAlive()){
                     if(!cli.getClient().getInetAddress().isReachable(3000)){
+                    //if (!esAlcanzable(cli.getSocket())){
                         ListIterator li = listeners.listIterator();
                         while (li.hasNext()) {
                             ClientListObserverListener listener = (ClientListObserverListener) li.next();
@@ -63,9 +67,23 @@ public class ClientListObserver extends Thread {
         } catch (java.util.ConcurrentModificationException e) {
             System.out.println("error Controlado GG> ClientListObserver.run [ava.util.ConcurrentModificationException]");
             //Logger.getLogger(ClientListObserver.class.getName()).log(Level.SEVERE, null, e);
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             Logger.getLogger(ClientListObserver.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private boolean esAlcanzable(Socket socket){
+        boolean sw=true;
+        try {
+            DataOutputStream out =new DataOutputStream(socket.getOutputStream());
+            out.write('@');
+            out.close();
+        } catch (IOException ex) {
+            sw=false;
+            System.out.println("NO ALCANZABLE");
+        }
+        return sw;
     }
     
 }
