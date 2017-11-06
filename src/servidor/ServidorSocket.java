@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import eventos.ConnectionManagertListener;
+import java.io.DataOutputStream;
+import java.util.ListIterator;
 
 /**
  *
@@ -96,6 +98,20 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             server.close();
         } catch (IOException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void EnviarMenasaje(String mensaje){
+        ListIterator li = clientManagerList.listIterator();
+        while (li.hasNext()) {
+            try {
+                ClientManager cli = (ClientManager) li.next();
+                DataOutputStream out = new DataOutputStream (cli.getSocket().getOutputStream());
+                MessageSend messageSend = new MessageSend(out, mensaje);
+            } catch (IOException ex) {
+                Logger.getLogger(ServidorSocket.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
     }
 
