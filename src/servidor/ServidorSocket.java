@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import eventos.ConnectionManagertListener;
 import java.io.DataOutputStream;
 import java.util.ListIterator;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -28,6 +29,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
     private ServerSocket server=null;
     private ConnectionManager connectionManager=null;
     private ClientListObserver clientListObserver;
+    private JTextArea textArea;
     
     private ArrayList<ClientManager> clientManagerList;
     private int port;
@@ -38,8 +40,12 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         try{
             server= new ServerSocket(this.port);
         } catch (IOException e) {
-            System.out.println("No se pudo abrir el servidor socket: "+e.getMessage());
+            System.out.println("ServidorSocket.Constructor:> No se pudo abrir el servidor socket:: "+e.getMessage());
         }
+    }
+    
+    public void setTextArea(JTextArea textArea){
+        this.textArea=textArea;
     }
     
         public void connetClient_Action(ConnectionManagerEvent ev) {
@@ -47,32 +53,33 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             Client cliente = con.getCliente();
             ClientManager clientManager= new ClientManager(cliente);
             clientManager.addListenerEvent(this);
+            
             clientManagerList.add(clientManager);
-            System.out.println("ServidorSocket:> Nuevo Cliente Registrado:: ");
+            System.out.println("Nuevo Cliente Registrado:: "+ cliente.getInetAddress().toString());
             clientManager.iniciar();
         }
 
         @Override
         public void onDisconnectClient(ClientManagerEvent ev) {
             ClientManager cli = (ClientManager)ev.getSource();
-            cli.deterner();
             clientManagerList.remove(cli);
-            System.out.println("ServidorSocket:> Una Cliente fue Borrado:: ");
+            cli.deterner();
+            System.out.println("Un Cliente se desconecto:: "+ cli.getClient().getInetAddress().toString());
         }
         
         @Override
         public void onReceiveMessage(ClientManagerEvent ev){
             ClientManager cli = (ClientManager)ev.getSource();
-            System.out.println("Mensage del Cliente:: "+cli.getMessage());
-            
+            textArea.append("Entrada:"+ cli.getClient().getIp()+":> "+cli.getMessage()+"\n");
+            //System.out.println("Mensage del Cliente:: "+ cli.getClient().getInetAddress()+"-> "+cli.getMessage());
         }
         
         @Override
         public void onLostConnection(ClientListObserverEvent ev) {
             ClientManager cli = (ClientManager)ev.getSource();
-            cli.deterner();
             clientManagerList.remove(cli);
-            System.out.println("ServidorSocket:> [Conexion Perdida] Una Cliente fue Borrado:: ");
+            cli.deterner();
+            System.out.println("Conexion perdida de un Cliente:: "+ cli.getClient().getIp()+ " [Quitado]");
         }
     
     public void iniciarServicio(){
@@ -108,6 +115,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
                 ClientManager cli = (ClientManager) li.next();
                 DataOutputStream out = new DataOutputStream (cli.getSocket().getOutputStream());
                 MessageSend messageSend = new MessageSend(out, mensaje);
+                messageSend.start();
             } catch (IOException ex) {
                 Logger.getLogger(ServidorSocket.class.getName()).log(Level.SEVERE, null, ex);
             }

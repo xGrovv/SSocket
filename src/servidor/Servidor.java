@@ -141,6 +141,7 @@ public class Servidor extends javax.swing.JFrame {
         // TODO add your handling code here:
         int port = Integer.parseInt(txPuerto.getText());
         servidorSocket= new ServidorSocket(port);
+        servidorSocket.setTextArea(jTextArea1);
         servidorSocket.iniciarServicio();
     }//GEN-LAST:event_btIniciarServicioActionPerformed
 
@@ -152,7 +153,10 @@ public class Servidor extends javax.swing.JFrame {
 
     private void btEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEnviarActionPerformed
         // TODO add your handling code here:
-        servidorSocket.EnviarMenasaje(txEnviar.getText());
+        String texto = txEnviar.getText();
+        servidorSocket.EnviarMenasaje(texto);
+        jTextArea1.append("Salida:> "+texto+"\n");
+        txEnviar.setText("");
     }//GEN-LAST:event_btEnviarActionPerformed
 
     /**

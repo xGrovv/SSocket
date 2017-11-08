@@ -37,9 +37,8 @@ public class ClientManager extends Thread{
         listeners= new ArrayList();
         try {
             messageIn = new DataInputStream(this.cliente.getSocket().getInputStream());
-            
         } catch (IOException e) {
-            System.out.println("error ClientManager Constructor: "+ e.getMessage());
+            System.out.println("ClientManager.Constructor:> : "+ e.getMessage());
         }
     }
     
@@ -62,8 +61,13 @@ public class ClientManager extends Thread{
     public void deterner(){
         connected=false;
         try {
+            messageIn.close();
             cliente.getSocket().close();
+            //this.finalize();
+            
         } catch (IOException ex) {
+            Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Throwable ex) {
             Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -80,18 +84,18 @@ public class ClientManager extends Thread{
                     (listener).onReceiveMessage(evObj);
                 }
             }
-            
             System.out.println("");
         } catch (SocketException ex) {
-            System.out.println("SE DESCONECTO EL CLIENTE: "+ ex.getMessage());
+            System.out.println("ClientManager.run:> Se desconecto el cliente: "+ ex.getMessage());
             ListIterator li = listeners.listIterator();
+            
             while (li.hasNext()) {
                 ClientManagerListener listener = (ClientManagerListener) li.next();
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
         } catch (IOException e) {
-            System.out.println("ERRR "+ e.getMessage());
+            System.out.println("ClientManager.run:> ERRR "+ e.getMessage());
         }
     }
     

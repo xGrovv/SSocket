@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author Grover
  */
-public class MessageSend {
+public class MessageSend extends Thread {
     
     private DataOutputStream out=null;
     private String mensaje;
@@ -22,6 +22,10 @@ public class MessageSend {
     public MessageSend(DataOutputStream dataOut, String mensaje){
         this.out=dataOut;
         this.mensaje=mensaje;
+    }
+    
+    @Override
+    public void run() {
         try {
             out.writeUTF(this.mensaje);
         } catch (IOException ex) {

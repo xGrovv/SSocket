@@ -9,7 +9,6 @@ import eventos.ClientListObserverEvent;
 import eventos.ClientListObserverListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -29,7 +28,6 @@ public class ClientListObserver extends Thread {
     public ClientListObserver(ArrayList<ClientManager> listClients) {
         this.listClients = listClients;
         listeners= new ArrayList();
-        //clientDisconnected=null;
         enable =false;
     }
     
@@ -48,42 +46,50 @@ public class ClientListObserver extends Thread {
     
     @Override
     public void run() {
+        while (enable){
         try {
-            while (enable){
+
                 for (Object obj : listClients){
-                    ClientManager cli = (ClientManager)obj;
-                    //if(!cli.getClient().getSocket().getKeepAlive()){
-                    if(!cli.getClient().getInetAddress().isReachable(3000)){
-                    //if (!esAlcanzable(cli.getSocket())){
+                    ClientManager cli = (ClientManager)obj;                    
+                    //isReachable("www.google.com");                                        
+                    String address =cli.getClient().getIp().substring(1, cli.getClient().getIp().length());
+                  
+                    //System.out.println(address+" online");                    
+                    if(!isReachable(address)){
+                        
                         ListIterator li = listeners.listIterator();
                         while (li.hasNext()) {
                             ClientListObserverListener listener = (ClientListObserverListener) li.next();
                             ClientListObserverEvent evObj = new ClientListObserverEvent(cli);
                             (listener).onLostConnection(evObj);
                         }
-                    }
+                    }                    
                 }
-            }
+            
         } catch (java.util.ConcurrentModificationException e) {
             System.out.println("error Controlado GG> ClientListObserver.run [ava.util.ConcurrentModificationException]");
-            //Logger.getLogger(ClientListObserver.class.getName()).log(Level.SEVERE, null, e);
-        }
-        catch (IOException ex) {
-            Logger.getLogger(ClientListObserver.class.getName()).log(Level.SEVERE, null, ex);
+        }  
         }
     }
     
-    private boolean esAlcanzable(Socket socket){
-        boolean sw=true;
-        try {
-            DataOutputStream out =new DataOutputStream(socket.getOutputStream());
-            out.write('@');
-            out.close();
+    public boolean isReachable(String address){        
+        try {          
+              boolean reachable;
+               try {
+                   reachable = (java.lang.Runtime.getRuntime().exec("ping -n 1 "+address).waitFor()==0);
+                    if(reachable)
+                        System.out.println("activo funca ip isReachable -->"+address);
+                    else
+                        System.out.println("no funciona ip isReachable -->"+address);
+                    return reachable;
+               } catch (InterruptedException ex) {
+                   Logger.getLogger(ClientListObserver.class.getName()).log(Level.SEVERE, null, ex);
+               }          
         } catch (IOException ex) {
-            sw=false;
-            System.out.println("NO ALCANZABLE");
-        }
-        return sw;
+            Logger.getLogger(ClientListObserver.class.getName()).log(Level.SEVERE, null, ex);
+        }   return false;        
     }
+    
+    
     
 }
