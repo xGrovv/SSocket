@@ -16,9 +16,9 @@ import java.util.Date;
 public class Client {
     
     private Socket socket=null;
-    String ip;
-    Date dateConnection;
-    InetAddress inetAddress;
+    private String ip;
+    private Date dateConnection;
+    private InetAddress inetAddress;
     
     public Client(Socket socket){
         this.socket= socket;
@@ -38,4 +38,5 @@ public class Client {
     public InetAddress getInetAddress(){
         return inetAddress;
     }
+    
 }

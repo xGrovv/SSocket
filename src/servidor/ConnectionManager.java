@@ -19,7 +19,7 @@ import eventos.ConnectionManagertListener;
  */
 public class ConnectionManager extends Thread{
     
-    private ServerSocket sserver;
+    private final ServerSocket sserver;
     private Socket sclient;
     private Client cliente=null;
     private ArrayList listeners;

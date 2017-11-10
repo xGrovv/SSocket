@@ -62,8 +62,8 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         @Override
         public void onDisconnectClient(ClientManagerEvent ev) {
             ClientManager cli = (ClientManager)ev.getSource();
-            clientManagerList.remove(cli);
             cli.deterner();
+            clientManagerList.remove(cli);
             System.out.println("Un Cliente se desconecto:: "+ cli.getClient().getInetAddress().toString());
         }
         
@@ -71,14 +71,13 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         public void onReceiveMessage(ClientManagerEvent ev){
             ClientManager cli = (ClientManager)ev.getSource();
             textArea.append("Entrada:"+ cli.getClient().getIp()+":> "+cli.getMessage()+"\n");
-            //System.out.println("Mensage del Cliente:: "+ cli.getClient().getInetAddress()+"-> "+cli.getMessage());
         }
         
         @Override
         public void onLostConnection(ClientListObserverEvent ev) {
             ClientManager cli = (ClientManager)ev.getSource();
-            clientManagerList.remove(cli);
             cli.deterner();
+            clientManagerList.remove(cli);
             System.out.println("Conexion perdida de un Cliente:: "+ cli.getClient().getIp()+ " [Quitado]");
         }
     
@@ -103,8 +102,15 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         connectionManager.Detener();
         try {
             server.close();
+            clientListObserver.detener();
+            for (Object obj : clientManagerList){
+                ClientManager cli = (ClientManager)obj;                                
+                cli.deterner();
+            }
+            clientManagerList.clear();
         } catch (IOException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
     
@@ -119,7 +125,6 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             } catch (IOException ex) {
                 Logger.getLogger(ServidorSocket.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
     }
 

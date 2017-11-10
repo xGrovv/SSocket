@@ -28,8 +28,6 @@ public class ClientManager extends Thread{
     private ArrayList listeners;
     private boolean connected;
     
-    
-    
     public ClientManager(Client cliente){
         this.cliente= cliente;
         message = "";
@@ -54,17 +52,11 @@ public class ClientManager extends Thread{
         this.start();
     }
     
-    public void pausar(){
-        
-    }
-    
     public void deterner(){
         connected=false;
         try {
             messageIn.close();
             cliente.getSocket().close();
-            //this.finalize();
-            
         } catch (IOException ex) {
             Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Throwable ex) {
@@ -88,14 +80,20 @@ public class ClientManager extends Thread{
         } catch (SocketException ex) {
             System.out.println("ClientManager.run:> Se desconecto el cliente: "+ ex.getMessage());
             ListIterator li = listeners.listIterator();
-            
             while (li.hasNext()) {
                 ClientManagerListener listener = (ClientManagerListener) li.next();
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
         } catch (IOException e) {
-            System.out.println("ClientManager.run:> ERRR "+ e.getMessage());
+            System.out.println("CLIENTE SE DESCONEXTO "+ e.getMessage());
+            ListIterator li = listeners.listIterator();
+            while (li.hasNext()) {
+                ClientManagerListener listener = (ClientManagerListener) li.next();
+                ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
+                (listener).onDisconnectClient(evObj);
+            }
+            
         }
     }
     
