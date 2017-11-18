@@ -64,7 +64,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             ClientManager cli = (ClientManager)ev.getSource();
             cli.deterner();
             clientManagerList.remove(cli);
-            System.out.println("Un Cliente se desconecto:: "+ cli.getClient().getInetAddress().toString());
+            //System.out.println("Un Cliente se desconecto:: "+ cli.getClient().getInetAddress().toString());
         }
         
         @Override
@@ -78,7 +78,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             ClientManager cli = (ClientManager)ev.getSource();
             cli.deterner();
             clientManagerList.remove(cli);
-            System.out.println("Conexion perdida de un Cliente:: "+ cli.getClient().getIp()+ " [Quitado]");
+            
         }
     
     public void iniciarServicio(){

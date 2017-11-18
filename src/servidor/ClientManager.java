@@ -44,6 +44,10 @@ public class ClientManager extends Thread{
         listeners.add(clientManagerListener);
     }
     
+    public void removeListenerEvent(){
+        listeners.clear();
+    }
+    
     public Socket getSocket(){
         return cliente.getSocket();
     }
@@ -54,6 +58,7 @@ public class ClientManager extends Thread{
     
     public void deterner(){
         connected=false;
+        removeListenerEvent();
         try {
             messageIn.close();
             cliente.getSocket().close();
@@ -77,23 +82,26 @@ public class ClientManager extends Thread{
                 }
             }
             System.out.println("");
-        } catch (SocketException ex) {
-            System.out.println("ClientManager.run:> Se desconecto el cliente: "+ ex.getMessage());
+        } catch (SocketException ex) {// reset cliente
+            //System.out.println("ClientManager.run:> Se desconecto el cliente: "+ ex.getMessage());
+            System.out.println("Un Cliente se desconecto:: "+ this.getClient().getInetAddress().toString());
             ListIterator li = listeners.listIterator();
             while (li.hasNext()) {
                 ClientManagerListener listener = (ClientManagerListener) li.next();
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
-        } catch (IOException e) {
-            System.out.println("CLIENTE SE DESCONEXTO "+ e.getMessage());
+        } catch (java.io.EOFException eofEx){ // closed socket client
+            System.out.println("CLIENTE SE DESCONEXTO "+ eofEx.getMessage());
             ListIterator li = listeners.listIterator();
             while (li.hasNext()) {
                 ClientManagerListener listener = (ClientManagerListener) li.next();
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
-            
+        } 
+        catch (IOException ex) {// cierre de socket cliente
+            Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

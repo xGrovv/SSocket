@@ -63,6 +63,7 @@ public class ClientListObserver extends Thread {
                             ClientListObserverListener listener = (ClientListObserverListener) li.next();
                             ClientListObserverEvent evObj = new ClientListObserverEvent(cli);
                             (listener).onLostConnection(evObj);
+                            System.out.println("Conexion perdida de un Cliente:: "+ cli.getClient().getIp()+ " [Quitado]");
                         }
                     }                    
                 }
