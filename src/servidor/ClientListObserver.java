@@ -55,8 +55,8 @@ public class ClientListObserver extends Thread {
         while (enable){
             try {
                 for (Object obj : listClients){
-                    ClientManager cli = (ClientManager)obj;                    
-                    String address =cli.getClient().getIp().substring(1, cli.getClient().getIp().length());         
+                    ClientManager cli = (ClientManager)obj;                                
+                    String address =cli.getClient().getIp().substring(1, cli.getClient().getIp().length());
                     if(!isReachable(address)){
                         ListIterator li = listeners.listIterator();
                         while (li.hasNext()) {

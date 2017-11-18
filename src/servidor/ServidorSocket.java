@@ -54,6 +54,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             ClientManager clientManager= new ClientManager(cliente);
             clientManager.addListenerEvent(this);
             
+            //synchronized(this){clientManagerList.add(clientManager);}
             clientManagerList.add(clientManager);
             System.out.println("Nuevo Cliente Registrado:: "+ cliente.getInetAddress().toString());
             clientManager.iniciar();
@@ -77,8 +78,8 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         public void onLostConnection(ClientListObserverEvent ev) {
             ClientManager cli = (ClientManager)ev.getSource();
             cli.deterner();
+            //synchronized(this){clientManagerList.remove(cli);}
             clientManagerList.remove(cli);
-            
         }
     
     public void iniciarServicio(){
@@ -104,9 +105,9 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             server.close();
             clientListObserver.detener();
             for (Object obj : clientManagerList){
-                ClientManager cli = (ClientManager)obj;                                
-                cli.deterner();
-            }
+                    ClientManager cli = (ClientManager)obj;                                
+                    cli.deterner();
+            }        
             clientManagerList.clear();
         } catch (IOException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);

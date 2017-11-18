@@ -36,7 +36,7 @@ public class ClientManager extends Thread{
         try {
             messageIn = new DataInputStream(this.cliente.getSocket().getInputStream());
         } catch (IOException e) {
-            System.out.println("ClientManager.Constructor:> : "+ e.getMessage());
+            System.out.println("ERRR: ClientManager.Constructor:> : "+ e.getMessage());
         }
     }
     
@@ -44,9 +44,9 @@ public class ClientManager extends Thread{
         listeners.add(clientManagerListener);
     }
     
-    public void removeListenerEvent(){
+    /*public void removeListenerEvent(){
         listeners.clear();
-    }
+    }*/
     
     public Socket getSocket(){
         return cliente.getSocket();
@@ -58,15 +58,15 @@ public class ClientManager extends Thread{
     
     public void deterner(){
         connected=false;
-        removeListenerEvent();
+        //removeListenerEvent();
         try {
             messageIn.close();
             cliente.getSocket().close();
         } catch (IOException ex) {
             Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Throwable ex) {
+        } /*catch (Throwable ex) {
             Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
     @Override
@@ -91,7 +91,7 @@ public class ClientManager extends Thread{
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
-        } catch (java.io.EOFException eofEx){ // closed socket client
+        } /*catch (java.io.EOFException eofEx){ // closed socket client
             System.out.println("CLIENTE SE DESCONEXTO "+ eofEx.getMessage());
             ListIterator li = listeners.listIterator();
             while (li.hasNext()) {
@@ -99,9 +99,15 @@ public class ClientManager extends Thread{
                 ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
                 (listener).onDisconnectClient(evObj);
             }
-        } 
-        catch (IOException ex) {// cierre de socket cliente
-            Logger.getLogger(ClientManager.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        catch (IOException e) {// cierre de socket cliente
+            System.out.println("CLIENTE SE DESCONEXTO "+ e.getMessage());
+            ListIterator li = listeners.listIterator();
+            while (li.hasNext()) {
+                ClientManagerListener listener = (ClientManagerListener) li.next();
+                ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
+                (listener).onDisconnectClient(evObj);
+            }
         }
     }
     
