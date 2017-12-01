@@ -69,7 +69,7 @@ public class ClientListObserver extends Thread {
                 }
 
             } catch (java.util.ConcurrentModificationException e) {
-                System.out.println("error Controlado GG> ClientListObserver.run [ava.util.ConcurrentModificationException]");
+                System.out.println("error Controlado GG> ClientListObserver.run [java.util.ConcurrentModificationException]");
             }
         }
     }
@@ -79,9 +79,9 @@ public class ClientListObserver extends Thread {
             boolean reachable;
             try {
                 reachable = (java.lang.Runtime.getRuntime().exec("ping -n 1 "+address).waitFor()==0);
-                if(reachable)
-                    System.out.println("ranning on line ip -->"+address);
-                else
+                if(!reachable)
+                    //System.out.println("ranning on line ip -->"+address);
+                //else
                     System.out.println("break .. offline ip-->"+address);
                 return reachable;
             } catch (InterruptedException ex) {
