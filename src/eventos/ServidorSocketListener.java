@@ -15,5 +15,6 @@ public interface ServidorSocketListener extends EventListener {
     
     public void onNewConnection(ServidorSocketEvent ev);
     public void onMessageReceive(ServidorSocketEvent ev);
+    //public void onFailInitSocket(ServidorSocketEvent ev);
     
 }
