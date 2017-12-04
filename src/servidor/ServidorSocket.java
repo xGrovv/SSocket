@@ -33,6 +33,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
     private ClientListObserver clientListObserver;
     private JTextArea textArea;
     private ArrayList listeners;
+    private boolean deteniendo;
     
     private ArrayList<ClientManager> clientManagerList;
     private int port;
@@ -41,6 +42,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         this.port=port;
         clientManagerList = new ArrayList<>();
         listeners = new ArrayList();
+        deteniendo=false;
         try{
             server= new ServerSocket(this.port);
         } catch (IOException e) {
@@ -56,31 +58,43 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         listeners.add(servidorSocketListener);
     }
     
-        public void connetClient_Action(ConnectionManagerEvent ev) {
-            ConnectionManager con = (ConnectionManager)ev.getSource();
-            Client cliente = con.getCliente();
-            ClientManager clientManager= new ClientManager(cliente);
-            clientManager.addListenerEvent(this);
-            
-            synchronized(this){clientManagerList.add(clientManager);}
-            //clientManagerList.add(clientManager);
-            System.out.println("Nuevo Cliente Registrado:: "+ cliente.getInetAddress().toString());
-            clientManager.iniciar();
-            
-            ListIterator li = listeners.listIterator();
-            while (li.hasNext()) {
-                ServidorSocketListener listener = (ServidorSocketListener) li.next();
-                ServidorSocketEvent evObj = new ServidorSocketEvent(clientManager);
-                (listener).onNewConnection(evObj);
-            }
+    private void connetClient_Action(ConnectionManagerEvent ev) {
+        ConnectionManager con = (ConnectionManager)ev.getSource();
+        Client cliente = con.getCliente();
+        ClientManager clientManager= new ClientManager(cliente);
+        clientManager.addListenerEvent(this);
+
+        synchronized(this){clientManagerList.add(clientManager);}
+        //clientManagerList.add(clientManager);
+        System.out.println("Nuevo Cliente Registrado:: "+ cliente.getInetAddress().toString());
+        clientManager.iniciar();
+
+        ListIterator li = listeners.listIterator();
+        while (li.hasNext()) {
+            ServidorSocketListener listener = (ServidorSocketListener) li.next();
+            ServidorSocketEvent evObj = new ServidorSocketEvent(clientManager);
+            (listener).onNewConnection(evObj);
+        }
+    }
+    
+        @Override
+        public void onLostConnection(ClientListObserverEvent ev) {
+            deteniendo=true;
+            ClientManager cli = (ClientManager)ev.getSource();
+            cli.deterner();
+            synchronized(this){clientManagerList.remove(cli);}
+            System.out.println("LostConnection...aa");
         }
 
         @Override
         public void onDisconnectClient(ClientManagerEvent ev) {
-            ClientManager cli = (ClientManager)ev.getSource();
-            cli.deterner();
-            clientManagerList.remove(cli);
-            //System.out.println("Un Cliente se desconecto:: "+ cli.getClient().getInetAddress().toString());
+            if(!deteniendo){
+                ClientManager cli = (ClientManager)ev.getSource();
+                cli.deterner();
+                synchronized(this){clientManagerList.remove(cli);}
+                System.out.println("Disconneted...gg");
+            }
+            deteniendo=false;
         }
         
         @Override
@@ -92,17 +106,9 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
                 ServidorSocketEvent evObj = new ServidorSocketEvent(cli);
                 (listener).onMessageReceive(evObj);
             }
-            
-            //textArea.append("Entrada:"+ cli.getClient().getIp()+":> "+cli.getMessage()+"\n");
         }
         
-        @Override
-        public void onLostConnection(ClientListObserverEvent ev) {
-            ClientManager cli = (ClientManager)ev.getSource();
-            cli.deterner();
-            synchronized(this){clientManagerList.remove(cli);}
-            //clientManagerList.remove(cli);
-        }
+        
     
     public void iniciarServicio(){
         if (server==null)
