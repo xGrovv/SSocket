@@ -16,5 +16,6 @@ public interface ServidorSocketListener extends EventListener {
     public void onNewConnection(ServidorSocketEvent ev);
     public void onMessageReceive(ServidorSocketEvent ev);
     //public void onFailInitSocket(ServidorSocketEvent ev);
-    
+    public void onLostConnection(ServidorSocketEvent ev);// inalcanzable ip por ping
+    //public void onDisconnected(ServidorSocketEvent ev);
 }

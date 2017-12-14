@@ -63,25 +63,24 @@ public class ClientListObserver extends Thread {
                             ClientListObserverListener listener = (ClientListObserverListener) li.next();
                             ClientListObserverEvent evObj = new ClientListObserverEvent(cli);
                             (listener).onLostConnection(evObj);
-                            System.out.println("Conexion perdida de un Cliente:: "+ cli.getClient().getIp()+ " [Quitado]");
                         }
-                    }                    
+                    }
                 }
 
             } catch (java.util.ConcurrentModificationException e) {
-                System.out.println("error Controlado GG> ClientListObserver.run [java.util.ConcurrentModificationException]");
+                System.out.println("Servidor.ClientListObserver.run()"+":::error Controlado GG> "+e.getLocalizedMessage()); //[java.util.ConcurrentModificationException]");
             }
         }
     }
     
-    public boolean isReachable(String address){        
+    public boolean isReachable(String address){
+        if(("localhost".equals(address))||("127.0.0.1".equals(address)))
+            return true;
         try {          
             boolean reachable;
             try {
                 reachable = (java.lang.Runtime.getRuntime().exec("ping -n 1 "+address).waitFor()==0);
                 if(!reachable)
-                    //System.out.println("ranning on line ip -->"+address);
-                //else
                     System.out.println("break .. offline ip-->"+address);
                 return reachable;
             } catch (InterruptedException ex) {

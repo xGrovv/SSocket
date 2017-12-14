@@ -65,7 +65,6 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         clientManager.addListenerEvent(this);
 
         synchronized(this){clientManagerList.add(clientManager);}
-        //clientManagerList.add(clientManager);
         System.out.println("Nuevo Cliente Registrado:: "+ cliente.getInetAddress().toString());
         clientManager.iniciar();
 
@@ -83,7 +82,14 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             ClientManager cli = (ClientManager)ev.getSource();
             cli.deterner();
             synchronized(this){clientManagerList.remove(cli);}
-            System.out.println("LostConnection...aa");
+            System.out.println("ServidorSocket.onLostConnection:: "+ cli.getClient().getIp()+ " [Quitado]");
+            
+            ListIterator li = listeners.listIterator();
+            while (li.hasNext()) {
+                ServidorSocketListener listener = (ServidorSocketListener) li.next();
+                ServidorSocketEvent evObj = new ServidorSocketEvent(cli);
+                (listener).onLostConnection(evObj);
+            }
         }
 
         @Override
@@ -108,8 +114,6 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
             }
         }
         
-        
-    
     public void iniciarServicio(){
         if (server==null)
             return;
@@ -143,7 +147,7 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
         }
     }
     
-    public void EnviarMenasaje(String mensaje){
+    public void EnviarMenasajeTodosClientes(String mensaje){
         ListIterator li = clientManagerList.listIterator();
         while (li.hasNext()) {
             try {
@@ -158,12 +162,11 @@ public class ServidorSocket implements  ClientManagerListener, ClientListObserve
     }
     
     public void EnviarMenasaje(Client client, String mensaje){
-        //ListIterator li = clientManagerList.listIterator();
         try {
             DataOutputStream out = new DataOutputStream (client.getSocket().getOutputStream());
             MessageSend messageSend = new MessageSend(out, mensaje);
             messageSend.start(); 
-            System.out.println("servidor.ServidorSocket.EnviarMenasaje()");
+            //System.out.println("ServidorSocket.EnviarMenasaje()::"+mensaje);
         } catch (IOException ex) {
             Logger.getLogger(ServidorSocket.class.getName()).log(Level.SEVERE, null, ex);
         }

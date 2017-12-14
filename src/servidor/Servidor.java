@@ -154,7 +154,7 @@ public class Servidor extends javax.swing.JFrame {
     private void btEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEnviarActionPerformed
         // TODO add your handling code here:
         String texto = txEnviar.getText();
-        servidorSocket.EnviarMenasaje(texto);
+        servidorSocket.EnviarMenasajeTodosClientes(texto);
         jTextArea1.append("Salida:> "+texto+"\n");
         txEnviar.setText("");
     }//GEN-LAST:event_btEnviarActionPerformed

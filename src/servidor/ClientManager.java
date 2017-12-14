@@ -44,10 +44,6 @@ public class ClientManager extends Thread{
         listeners.add(clientManagerListener);
     }
     
-    /*public void removeListenerEvent(){
-        listeners.clear();
-    }*/
-    
     public Socket getSocket(){
         return cliente.getSocket();
     }
@@ -58,7 +54,6 @@ public class ClientManager extends Thread{
     
     public void deterner(){
         connected=false;
-        //removeListenerEvent();
         try {
             messageIn.close();
             cliente.getSocket().close();
@@ -83,11 +78,10 @@ public class ClientManager extends Thread{
             }
             System.out.println("");
         } catch (SocketException ex) {// reset cliente
-            System.out.println("Un Cliente se desconecto:: "+ this.getClient().getInetAddress().toString());
             ListIterator li = listeners.listIterator();
             while (li.hasNext()) {
                 ClientManagerListener listener = (ClientManagerListener) li.next();
-                ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
+                ClientManagerEvent evObj = new ClientManagerEvent(this);
                 (listener).onDisconnectClient(evObj);
             }
         } catch (java.io.EOFException eofEx){ // closed socket client
@@ -95,7 +89,7 @@ public class ClientManager extends Thread{
             ListIterator li = listeners.listIterator();
             while (li.hasNext()) {
                 ClientManagerListener listener = (ClientManagerListener) li.next();
-                ClientManagerEvent evObj = new ClientManagerEvent(this);//, this);
+                ClientManagerEvent evObj = new ClientManagerEvent(this);
                 (listener).onDisconnectClient(evObj);
             }
         }

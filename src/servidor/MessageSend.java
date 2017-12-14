@@ -16,8 +16,8 @@ import java.util.logging.Logger;
  */
 public class MessageSend extends Thread {
     
-    private DataOutputStream out=null;
-    private String mensaje;
+    private final DataOutputStream out;
+    private final String mensaje;
     
     public MessageSend(DataOutputStream dataOut, String mensaje){
         this.out=dataOut;
@@ -28,6 +28,7 @@ public class MessageSend extends Thread {
     public void run() {
         try {
             out.writeUTF(this.mensaje);
+            out.flush();
         } catch (IOException ex) {
             Logger.getLogger(MessageSend.class.getName()).log(Level.SEVERE, null, ex);
         }
